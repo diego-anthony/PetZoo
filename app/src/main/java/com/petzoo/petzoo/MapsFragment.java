@@ -3,6 +3,9 @@ package com.petzoo.petzoo;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -111,7 +114,15 @@ public class MapsFragment extends Fragment {
                 googleMap.setMyLocationEnabled(true);
 
                 // For dropping a marker at a point on the Map
-                LatLng sydney = new LatLng(-34, 151);
+                LocationManager locationManager = (LocationManager)
+                        getActivity().getSystemService(Context.LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+
+                Location location = locationManager.getLastKnownLocation(locationManager
+                        .getBestProvider(criteria, false));
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                LatLng sydney = new LatLng(latitude, longitude);
                 googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
 
                 // For zooming automatically to the location of the marker
