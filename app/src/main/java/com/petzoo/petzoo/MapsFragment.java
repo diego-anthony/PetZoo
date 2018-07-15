@@ -1,11 +1,9 @@
 package com.petzoo.petzoo;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,7 +12,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -22,11 +28,23 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.petzoo.petzoo.constants.ApiServiceConstants;
 import com.petzoo.petzoo.constants.MapContants;
 import com.petzoo.petzoo.constants.PermissionConstants;
 import com.petzoo.petzoo.constants.UbicationConstants;
 import com.petzoo.petzoo.helpers.UserHelper;
+import com.petzoo.petzoo.models.Alerta;
+import com.petzoo.petzoo.models.Mascota;
+import com.petzoo.petzoo.models.ResponseManager;
+
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MapsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -91,23 +109,73 @@ public class MapsFragment extends Fragment {
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
-                configurateMap(mMap);
+                configureMap(mMap);
             }
         });
 
         return rootView;
     }
-    private void configurateMap(GoogleMap mMap){
+
+    private void configureMap(GoogleMap mMap){
         googleMap = mMap;
         // For showing a move to my location button
-        LatLng sydney = getCurrentLocationUser();
+        LatLng latLng = getCurrentLocationUser();
         // For dropping a marker at a point on the Map
-        googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+        loadData(googleMap);
 
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                return false;
+            }
+        });
         // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(MapContants.ZOOM_LEVEL).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(MapContants.ZOOM_LEVEL).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
+
+    private void loadData(final GoogleMap googleMap) {
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+
+        final ProgressDialog progress = new ProgressDialog(getContext());
+        progress.setTitle("Mascotas");
+        progress.setMessage("Cargando datos...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
+        JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, ApiServiceConstants.URL_BASE+"/api/Alerta", null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        if (response.length() > 0) {
+                            Gson gson = new Gson();
+                            List<Alerta> alerta = Arrays.asList(gson.fromJson(response.toString(), Alerta[].class));
+                            loadMarkers(alerta);
+                        }
+                        progress.dismiss();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                ResponseManager response = new ResponseManager(false,error.getMessage());
+                progress.dismiss();
+            }
+        });
+        queue.add(stringRequest);
+    }
+
+    private void loadMarkers(List<Alerta> alertas) {
+        googleMap.clear();
+        for(Alerta alerta: alertas){
+            LatLng position = new LatLng(alerta.getLatitud(), alerta.getLongitud());
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .position(position)
+                    .title(alerta.getDescripcion());
+            //Marker s = new Marker();
+            googleMap.addMarker(markerOptions);
+        }
+    }
+
+
     private LatLng getCurrentLocationUser(){
         LatLng result;
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -135,7 +203,7 @@ public class MapsFragment extends Fragment {
             case PermissionConstants.LOCATION_REQUEST:
                 if (canAccessLocation()){
                     googleMap.clear();
-                    configurateMap(googleMap);
+                    configureMap(googleMap);
                 }
         }
     }
