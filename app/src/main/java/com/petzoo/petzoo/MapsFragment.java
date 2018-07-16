@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.petzoo.petzoo.InfoWindows.AlertaInfoWindow;
 import com.petzoo.petzoo.constants.ApiServiceConstants;
+import com.petzoo.petzoo.constants.ExtrasConstants;
 import com.petzoo.petzoo.constants.MapContants;
 import com.petzoo.petzoo.constants.PermissionConstants;
 import com.petzoo.petzoo.constants.UbicationConstants;
@@ -48,7 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapsFragment extends Fragment implements GoogleMap.OnInfoWindowClickListener{
+public class MapsFragment extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -106,16 +107,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnInfoWindowClic
             }
         });
 
-        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                String name = marker.getTitle().toString();
-                Intent intent = new Intent(getContext(),MascotaDetalleActivity.class);
-                intent.putExtra("Test",name);
-                startActivity(intent);
-            }
-        });
-
         return rootView;
     }
 
@@ -125,6 +116,17 @@ public class MapsFragment extends Fragment implements GoogleMap.OnInfoWindowClic
         LatLng latLng = getCurrentLocationUser();
         // For dropping a marker at a point on the Map
         loadData(googleMap);
+
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                String name = marker.getTitle().toString();
+                Intent intent = new Intent(getContext(),MascotaDetalleActivity.class);
+                intent.putExtra(ExtrasConstants.MakerToAlertDetailIdAlert,name);
+                startActivity(intent);
+                return false;
+            }
+        });
 
         googleMap.setInfoWindowAdapter(new AlertaInfoWindow(LayoutInflater.from(getActivity())));
         // For zooming automatically to the location of the marker
@@ -154,7 +156,8 @@ public class MapsFragment extends Fragment implements GoogleMap.OnInfoWindowClic
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                ResponseManager response = new ResponseManager(false,error.getMessage());
+                // ResponseManager response = new ResponseManager(false,error.getMessage());
+                Toast.makeText(getContext(), "Error al cargar mascotas", Toast.LENGTH_SHORT).show();
                 progress.dismiss();
             }
         });
@@ -213,16 +216,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnInfoWindowClic
 
     private boolean hasPermission(String perm) {
         return(PackageManager.PERMISSION_GRANTED==ActivityCompat.checkSelfPermission(getContext(),perm));
-    }
-
-
-
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        String name = marker.getTitle().toString();
-        Intent intent = new Intent(getContext(),MascotaDetalleActivity.class);
-        intent.putExtra("Test",name);
-        startActivity(intent);
     }
 
     public interface OnFragmentInteractionListener {

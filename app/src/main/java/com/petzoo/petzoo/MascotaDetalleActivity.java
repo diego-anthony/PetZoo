@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.petzoo.petzoo.constants.ExtrasConstants;
+
 public class MascotaDetalleActivity extends AppCompatActivity {
 
     TextView txtName;
@@ -15,7 +17,7 @@ public class MascotaDetalleActivity extends AppCompatActivity {
         txtName = findViewById(R.id.txtNameMascota);
 
         Intent intent = getIntent();
-        String name = intent.getStringExtra("Test");
+        String name = intent.getStringExtra(ExtrasConstants.MakerToAlertDetailIdAlert);
         txtName.setText(name);
     }
 }

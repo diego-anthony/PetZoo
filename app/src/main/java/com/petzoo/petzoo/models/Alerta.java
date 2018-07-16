@@ -1,15 +1,15 @@
 package com.petzoo.petzoo.models;
 
 public class Alerta {
-    private float IdAlerta;
+    private int IdAlerta;
     private String Descripcion;
     private float Latitud;
     private float Longitud;
     private String FechaAlerta;
-    private float IdPersona;
-    private float IdPersonaRescate;
-    private float IdClaseMascota;
-    private float IdEstadoAlerta;
+    private int IdPersona;
+    private int IdPersonaRescate;
+    private int IdClaseMascota;
+    private int IdEstadoAlerta;
     //ArrayList < Object > Foto = new ArrayList < Object > ();
     //private String ClaseMascota = null;
     //private String EstadoAlerta = null;
@@ -19,7 +19,7 @@ public class Alerta {
 
     // Getter Methods
 
-    public float getIdAlerta() {
+    public int getIdAlerta() {
         return IdAlerta;
     }
 
@@ -39,19 +39,19 @@ public class Alerta {
         return FechaAlerta;
     }
 
-    public float getIdPersona() {
+    public int getIdPersona() {
         return IdPersona;
     }
 
-    public float getIdPersonaRescate() {
+    public int getIdPersonaRescate() {
         return IdPersonaRescate;
     }
 
-    public float getIdClaseMascota() {
+    public int getIdClaseMascota() {
         return IdClaseMascota;
     }
 
-    public float getIdEstadoAlerta() {
+    public int getIdEstadoAlerta() {
         return IdEstadoAlerta;
     }
 /*
@@ -73,7 +73,7 @@ public class Alerta {
 */
     // Setter Methods
 
-    public void setIdAlerta(float IdAlerta) {
+    public void setIdAlerta(int IdAlerta) {
         this.IdAlerta = IdAlerta;
     }
 
@@ -93,19 +93,19 @@ public class Alerta {
         this.FechaAlerta = FechaAlerta;
     }
 
-    public void setIdPersona(float IdPersona) {
+    public void setIdPersona(int IdPersona) {
         this.IdPersona = IdPersona;
     }
 
-    public void setIdPersonaRescate(float IdPersonaRescate) {
+    public void setIdPersonaRescate(int IdPersonaRescate) {
         this.IdPersonaRescate = IdPersonaRescate;
     }
 
-    public void setIdClaseMascota(float IdClaseMascota) {
+    public void setIdClaseMascota(int IdClaseMascota) {
         this.IdClaseMascota = IdClaseMascota;
     }
 
-    public void setIdEstadoAlerta(float IdEstadoAlerta) {
+    public void setIdEstadoAlerta(int IdEstadoAlerta) {
         this.IdEstadoAlerta = IdEstadoAlerta;
     }
 /*
