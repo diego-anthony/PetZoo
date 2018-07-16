@@ -9,6 +9,9 @@ import android.location.LocationManager;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import static com.petzoo.petzoo.constants.UbicationConstants.DEFAULT_LATITUDE;
+import static com.petzoo.petzoo.constants.UbicationConstants.DEFAULT_LONGITUDE;
+
 public class UserHelper {
     public static LatLng getCurrentLatLng(Activity activity){
 
@@ -19,8 +22,14 @@ public class UserHelper {
         @SuppressLint("MissingPermission") Location location = locationManager
                 .getLastKnownLocation(locationManager
                 .getBestProvider(criteria, false));
-        double longitude = location.getLongitude();
-        double latitude = location.getLatitude();
+
+        double longitude = DEFAULT_LATITUDE;
+        double latitude = DEFAULT_LONGITUDE;
+        if(location != null)
+        {
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+        }
         LatLng cd = new LatLng(latitude,longitude);
         return cd;
 

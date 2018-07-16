@@ -20,6 +20,7 @@ import com.petzoo.petzoo.Service.ApiService;
 import com.petzoo.petzoo.constants.ApiServiceConstants;
 import com.petzoo.petzoo.constants.ExtrasConstants;
 import com.petzoo.petzoo.models.Alerta;
+import com.petzoo.petzoo.models.AlertaDetalle;
 import com.petzoo.petzoo.models.ResponseManager;
 
 import org.json.JSONArray;
@@ -30,17 +31,22 @@ import java.util.List;
 
 public class MascotaDetalleActivity extends AppCompatActivity {
 
-    TextView txtName;
+    TextView txt_descripcion, txt_clase_mascota,txt_persona_reporta,txt_estado_alerta;
     private int idAlert = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mascota_detalle);
-        txtName = findViewById(R.id.txtNombre);
+        txt_descripcion = findViewById(R.id.txt_descripcion);
+        txt_clase_mascota = findViewById(R.id.txt_clase_mascota);
+        txt_persona_reporta = findViewById(R.id.txt_persona_reporta);
+        txt_estado_alerta = findViewById(R.id.txt_estado_alerta);
+
+
+
 
         Intent intent = getIntent();
         idAlert = intent.getIntExtra(ExtrasConstants.MakerToAlertDetailIdAlert,0);
-        Toast.makeText(this, idAlert+"", Toast.LENGTH_SHORT).show();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         loadData();
     }
@@ -49,21 +55,25 @@ public class MascotaDetalleActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
 
         final ProgressDialog progress = new ProgressDialog(this);
-        progress.setTitle("Mascotas");
+        progress.setTitle("Alertas");
         progress.setMessage("Cargando datos...");
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
 
 
 
-        JsonRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.GET, ApiServiceConstants.URL_BASE+"/api/Alerta/"+idAlert, null,
+        JsonRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.GET, ApiServiceConstants.URL_BASE+"/api/get_alert_detail?id="+idAlert, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Gson gson = new Gson();
-                        Alerta alerta = (gson.fromJson(response.toString(), Alerta.class));
+                        AlertaDetalle alerta = (gson.fromJson(response.toString(), AlertaDetalle.class));
+                        txt_descripcion.setText(alerta.getDescripcion());
+                        txt_clase_mascota.setText(alerta.getClaseMascota());
+                        txt_persona_reporta.setText(alerta.getNombrePersona());
+                        txt_estado_alerta.setText(alerta.getEstadoAlerta());
                         progress.dismiss();
-                        Toast.makeText(MascotaDetalleActivity.this, alerta.getDescripcion().toString(), Toast.LENGTH_SHORT).show();
+
                     }
                 }, new Response.ErrorListener() {
             @Override

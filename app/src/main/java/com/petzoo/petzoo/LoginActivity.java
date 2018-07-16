@@ -42,8 +42,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.petzoo.petzoo.constants.ApiServiceConstants;
+import com.petzoo.petzoo.db.DBHelper;
 import com.petzoo.petzoo.helpers.PreferencesHelper;
 import com.petzoo.petzoo.models.Alerta;
+import com.petzoo.petzoo.models.Usuario;
 
 import org.json.JSONObject;
 
@@ -327,29 +329,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
             String url = ApiServiceConstants.URL_BASE+"/api/validate?username="+mEmail+"&password="+mPassword;
-            StringRequest jsonObjectRequest= new StringRequest(Request.Method.GET, url,
-                    new Response.Listener<String>() {
+            JsonRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.GET, url,null,
+                    new Response.Listener<JSONObject>() {
                         @Override
-                        public void onResponse(String response) {
-                            boolean isSuccesss = Boolean.parseBoolean(response);
-                            if (isSuccesss){
-                                showProgress(false);
-                                PreferencesHelper preferencesHelper = new PreferencesHelper(LoginActivity.this);
-                                preferencesHelper.putIsLogin(true);
-                                Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                            else{
-                                showProgress(false);
-                                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                                mPasswordView.requestFocus();
-                            Toast.makeText(LoginActivity.this, response, Toast.LENGTH_SHORT).show();
-                            }
+                        public void onResponse(JSONObject response) {
+
+                            Gson gson = new Gson();
+                            Usuario usuario = gson.fromJson(response.toString(),Usuario.class);
+                            DBHelper dbHelper = new DBHelper(LoginActivity.this);
+                            dbHelper.createUser(usuario);
+                            showProgress(false);
+                            PreferencesHelper preferencesHelper = new PreferencesHelper(LoginActivity.this);
+                            preferencesHelper.putIsLogin(true);
+                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                            startActivity(intent);
+                            finish();
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+
+                    showProgress(false);
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+
                     Toast.makeText(LoginActivity.this, "No se ha podido completar la petición", Toast.LENGTH_SHORT).show();
                    // progress.dismiss();
                 }
