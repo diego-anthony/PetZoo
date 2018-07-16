@@ -3,6 +3,7 @@ package com.petzoo.petzoo;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.petzoo.petzoo.constants.ApiServiceConstants;
+import com.petzoo.petzoo.constants.ExtrasConstants;
 import com.petzoo.petzoo.constants.MapContants;
 import com.petzoo.petzoo.constants.PermissionConstants;
 import com.petzoo.petzoo.constants.UbicationConstants;
@@ -122,11 +124,15 @@ public class MapsFragment extends Fragment {
         // For showing a move to my location button
         LatLng latLng = getCurrentLocationUser();
         // For dropping a marker at a point on the Map
-        loadData(googleMap);
+        loadData();
 
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                Intent intent = new Intent(getContext(), MascotaDetalleActivity.class);
+                int idAlert = Integer.parseInt(marker.getSnippet().toString());
+                intent.putExtra(ExtrasConstants.MakerToAlertDetailIdAlert, idAlert);
+                startActivity(intent);
                 return false;
             }
         });
@@ -135,7 +141,7 @@ public class MapsFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    private void loadData(final GoogleMap googleMap) {
+    private void loadData() {
         RequestQueue queue = Volley.newRequestQueue(getContext());
 
         final ProgressDialog progress = new ProgressDialog(getContext());
@@ -157,7 +163,7 @@ public class MapsFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                ResponseManager response = new ResponseManager(false,error.getMessage());
+                Toast.makeText(getContext(), "No se ha podido completar la petición", Toast.LENGTH_SHORT).show();
                 progress.dismiss();
             }
         });
@@ -170,7 +176,7 @@ public class MapsFragment extends Fragment {
             LatLng position = new LatLng(alerta.getLatitud(), alerta.getLongitud());
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(position)
-                    .title(alerta.getDescripcion());
+                    .snippet(alerta.getIdAlerta()+"");
 
             markerOptions.icon(BitmapDescriptorFactory.fromResource(getIdIconMarker(alerta.getIdClaseMascota())));
             //Marker s = new Marker();
