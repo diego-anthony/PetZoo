@@ -3,6 +3,7 @@ package com.petzoo.petzoo;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.petzoo.petzoo.InfoWindows.AlertaInfoWindow;
 import com.petzoo.petzoo.constants.ApiServiceConstants;
 import com.petzoo.petzoo.constants.MapContants;
 import com.petzoo.petzoo.constants.PermissionConstants;
@@ -46,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapsFragment extends Fragment {
+public class MapsFragment extends Fragment implements GoogleMap.OnInfoWindowClickListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -64,15 +66,6 @@ public class MapsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MapsFragment newInstance(String param1, String param2) {
         MapsFragment fragment = new MapsFragment();
         Bundle args = new Bundle();
@@ -113,6 +106,16 @@ public class MapsFragment extends Fragment {
             }
         });
 
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                String name = marker.getTitle().toString();
+                Intent intent = new Intent(getContext(),MascotaDetalleActivity.class);
+                intent.putExtra("Test",name);
+                startActivity(intent);
+            }
+        });
+
         return rootView;
     }
 
@@ -123,12 +126,7 @@ public class MapsFragment extends Fragment {
         // For dropping a marker at a point on the Map
         loadData(googleMap);
 
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                return false;
-            }
-        });
+        googleMap.setInfoWindowAdapter(new AlertaInfoWindow(LayoutInflater.from(getActivity())));
         // For zooming automatically to the location of the marker
         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(MapContants.ZOOM_LEVEL).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -169,7 +167,8 @@ public class MapsFragment extends Fragment {
             LatLng position = new LatLng(alerta.getLatitud(), alerta.getLongitud());
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(position)
-                    .title(alerta.getDescripcion());
+                    .title(alerta.getDescripcion())
+                    .snippet(alerta.getIdAlerta()+"");
             //Marker s = new Marker();
             googleMap.addMarker(markerOptions);
         }
@@ -215,6 +214,22 @@ public class MapsFragment extends Fragment {
     private boolean hasPermission(String perm) {
         return(PackageManager.PERMISSION_GRANTED==ActivityCompat.checkSelfPermission(getContext(),perm));
     }
+
+
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        String name = marker.getTitle().toString();
+        Intent intent = new Intent(getContext(),MascotaDetalleActivity.class);
+        intent.putExtra("Test",name);
+        startActivity(intent);
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -262,10 +277,5 @@ public class MapsFragment extends Fragment {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }
