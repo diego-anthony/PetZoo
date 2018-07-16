@@ -3,6 +3,7 @@ package com.petzoo.petzoo;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,13 +27,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.petzoo.petzoo.InfoWindows.AlertaInfoWindow;
 import com.petzoo.petzoo.constants.ApiServiceConstants;
+import com.petzoo.petzoo.constants.ExtrasConstants;
 import com.petzoo.petzoo.constants.MapContants;
 import com.petzoo.petzoo.constants.PermissionConstants;
 import com.petzoo.petzoo.constants.UbicationConstants;
@@ -47,7 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapsFragment extends Fragment {
+public class MapsFragment extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -62,7 +64,7 @@ public class MapsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public MapsFragment() {
-        //
+        // Required empty public constructor
     }
 
     public static MapsFragment newInstance(String param1, String param2) {
@@ -118,9 +120,15 @@ public class MapsFragment extends Fragment {
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                String name = marker.getTitle().toString();
+                Intent intent = new Intent(getContext(),MascotaDetalleActivity.class);
+                intent.putExtra(ExtrasConstants.MakerToAlertDetailIdAlert,name);
+                startActivity(intent);
                 return false;
             }
         });
+
+        googleMap.setInfoWindowAdapter(new AlertaInfoWindow(LayoutInflater.from(getActivity())));
         // For zooming automatically to the location of the marker
         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(MapContants.ZOOM_LEVEL).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -148,7 +156,8 @@ public class MapsFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                ResponseManager response = new ResponseManager(false,error.getMessage());
+                // ResponseManager response = new ResponseManager(false,error.getMessage());
+                Toast.makeText(getContext(), "Error al cargar mascotas", Toast.LENGTH_SHORT).show();
                 progress.dismiss();
             }
         });
@@ -161,60 +170,13 @@ public class MapsFragment extends Fragment {
             LatLng position = new LatLng(alerta.getLatitud(), alerta.getLongitud());
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(position)
-                    .title(alerta.getDescripcion());
-
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(getIconMarker(alerta.getIdClaseMascota())));
+                    .title(alerta.getDescripcion())
+                    .snippet(alerta.getIdAlerta()+"");
             //Marker s = new Marker();
             googleMap.addMarker(markerOptions);
         }
     }
 
-
-    private int getIconMarker(Integer idClaseMascota)
-    {
-        int ico = 0;
-        switch (idClaseMascota)
-        {
-            case 1:
-                ico = R.drawable.loc_dog;
-                break;
-            case 2:
-                ico = R.drawable.loc_cat;
-                break;
-            case 3:
-                ico = R.drawable.loc_pig;
-                break;
-            case 4:
-                ico = R.drawable.loc_horse;
-                break;
-            case 5:
-                ico = R.drawable.loc_cow;
-                break;
-            case 6:
-                ico = R.drawable.loc_chimpanzee;
-                break;
-            case 7:
-                ico = R.drawable.loc_parrot;
-                break;
-            case 8:
-                ico = R.drawable.loc_swan;
-                break;
-            case 9:
-                ico = R.drawable.loc_rooster;
-                break;
-            case 10:
-                ico = R.drawable.loc_snake;
-                break;
-            case 11:
-                ico = R.drawable.loc_cuy;
-                break;
-                default:
-                    ico = R.drawable.loc_default;
-                    break;
-
-        }
-        return  ico;
-    }
 
     private LatLng getCurrentLocationUser(){
         LatLng result;
@@ -255,6 +217,12 @@ public class MapsFragment extends Fragment {
     private boolean hasPermission(String perm) {
         return(PackageManager.PERMISSION_GRANTED==ActivityCompat.checkSelfPermission(getContext(),perm));
     }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -302,10 +270,5 @@ public class MapsFragment extends Fragment {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }
