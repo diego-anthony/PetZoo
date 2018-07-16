@@ -8,7 +8,7 @@ public class Alerta {
     private String FechaAlerta;
     private float IdPersona;
     private float IdPersonaRescate;
-    private float IdClaseMascota;
+    private int IdClaseMascota;
     private float IdEstadoAlerta;
     //ArrayList < Object > Foto = new ArrayList < Object > ();
     //private String ClaseMascota = null;
@@ -47,7 +47,7 @@ public class Alerta {
         return IdPersonaRescate;
     }
 
-    public float getIdClaseMascota() {
+    public int getIdClaseMascota() {
         return IdClaseMascota;
     }
 
@@ -101,7 +101,7 @@ public class Alerta {
         this.IdPersonaRescate = IdPersonaRescate;
     }
 
-    public void setIdClaseMascota(float IdClaseMascota) {
+    public void setIdClaseMascota(int IdClaseMascota) {
         this.IdClaseMascota = IdClaseMascota;
     }
 

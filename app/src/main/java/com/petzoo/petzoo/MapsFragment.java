@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -61,18 +62,9 @@ public class MapsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public MapsFragment() {
-        // Required empty public constructor
+        //
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MapsFragment newInstance(String param1, String param2) {
         MapsFragment fragment = new MapsFragment();
         Bundle args = new Bundle();
@@ -170,11 +162,59 @@ public class MapsFragment extends Fragment {
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(position)
                     .title(alerta.getDescripcion());
+
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(getIconMarker(alerta.getIdClaseMascota())));
             //Marker s = new Marker();
             googleMap.addMarker(markerOptions);
         }
     }
 
+
+    private int getIconMarker(Integer idClaseMascota)
+    {
+        int ico = 0;
+        switch (idClaseMascota)
+        {
+            case 1:
+                ico = R.drawable.loc_dog;
+                break;
+            case 2:
+                ico = R.drawable.loc_cat;
+                break;
+            case 3:
+                ico = R.drawable.loc_pig;
+                break;
+            case 4:
+                ico = R.drawable.loc_horse;
+                break;
+            case 5:
+                ico = R.drawable.loc_cow;
+                break;
+            case 6:
+                ico = R.drawable.loc_chimpanzee;
+                break;
+            case 7:
+                ico = R.drawable.loc_parrot;
+                break;
+            case 8:
+                ico = R.drawable.loc_swan;
+                break;
+            case 9:
+                ico = R.drawable.loc_rooster;
+                break;
+            case 10:
+                ico = R.drawable.loc_snake;
+                break;
+            case 11:
+                ico = R.drawable.loc_cuy;
+                break;
+                default:
+                    ico = R.drawable.loc_default;
+                    break;
+
+        }
+        return  ico;
+    }
 
     private LatLng getCurrentLocationUser(){
         LatLng result;
