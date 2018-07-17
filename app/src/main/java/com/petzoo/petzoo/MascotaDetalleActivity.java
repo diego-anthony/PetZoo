@@ -13,23 +13,17 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.petzoo.petzoo.Service.ApiService;
 import com.petzoo.petzoo.constants.ApiServiceConstants;
 import com.petzoo.petzoo.constants.ExtrasConstants;
-import com.petzoo.petzoo.models.Alerta;
 import com.petzoo.petzoo.models.AlertaDetalle;
-import com.petzoo.petzoo.models.ResponseManager;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Objects;
 
 public class MascotaDetalleActivity extends AppCompatActivity {
 
@@ -49,12 +43,11 @@ public class MascotaDetalleActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         idAlert = intent.getIntExtra(ExtrasConstants.MakerToAlertDetailIdAlert,0);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         loadData();
     }
 
     private void loadData() {
-        RequestQueue queue = Volley.newRequestQueue(this);
 
         final ProgressDialog progress = new ProgressDialog(this);
         progress.setTitle("Alertas");
@@ -62,8 +55,7 @@ public class MascotaDetalleActivity extends AppCompatActivity {
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
 
-
-
+        RequestQueue queue = Volley.newRequestQueue(this);
         JsonRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.GET, ApiServiceConstants.URL_BASE+"/api/get_alert_detail?id="+idAlert, null,
                 new Response.Listener<JSONObject>() {
                     @Override
