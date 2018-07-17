@@ -306,7 +306,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
     /**
@@ -336,11 +335,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                             Gson gson = new Gson();
                             Usuario usuario = gson.fromJson(response.toString(),Usuario.class);
-                            DBHelper dbHelper = new DBHelper(LoginActivity.this);
-                            dbHelper.createUser(usuario);
                             showProgress(false);
-                            PreferencesHelper preferencesHelper = new PreferencesHelper(LoginActivity.this);
-                            preferencesHelper.putIsLogin(true);
+                            setPreferences(usuario);
                             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -359,36 +355,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             });
             queue.add(jsonObjectRequest);
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
             // TODO: register the new account here.
             return true;
         }
 
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            //showProgress(false);
-
-            if (success) {
-                //finish();
-            } else {
-                //mPasswordView.setError(getString(R.string.error_incorrect_password));
-                //mPasswordView.requestFocus();
-            }
+        private void setPreferences(Usuario usuario){
+            PreferencesHelper preferencesHelper = new PreferencesHelper(LoginActivity.this);
+            preferencesHelper.putIsLogin(true);
+            preferencesHelper.putName(usuario.getNombre());
+            preferencesHelper.putEmail(usuario.getCorreoElectronico());
         }
 
         @Override

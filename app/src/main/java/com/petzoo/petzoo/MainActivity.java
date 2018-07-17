@@ -1,9 +1,11 @@
 package com.petzoo.petzoo;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,10 +18,18 @@ import android.view.MenuItem;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.petzoo.petzoo.db.DBHelper;
+import com.petzoo.petzoo.helpers.PreferencesHelper;
+import com.petzoo.petzoo.models.Usuario;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,MapsFragment.OnFragmentInteractionListener {
+
+    TextView txt_name,txt_email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +48,15 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         choseFragment(R.id.nav_maps_fragment);
+
+        View headerView = navigationView.getHeaderView(0);
+        txt_name = headerView.findViewById(R.id.txt_name);
+        txt_email = headerView.findViewById(R.id.txt_email);
+
+        PreferencesHelper preferencesHelper= new PreferencesHelper(this);
+        String nameUser = preferencesHelper.getName();
+        txt_name.setText(nameUser.toString());
+        txt_email.setText(preferencesHelper.getEmail().toString());
     }
 
     @Override
@@ -83,6 +102,13 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         if (id == R.id.nav_maps_fragment) {
             fragment = new MapsFragment();
+        }
+        else if(id == R.id.nav_close_sesion){
+            PreferencesHelper preferencesHelper = new PreferencesHelper(this);
+            preferencesHelper.putIsLogin(false);
+            Intent intent = new Intent(this,LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
         if (fragment != null)
         {

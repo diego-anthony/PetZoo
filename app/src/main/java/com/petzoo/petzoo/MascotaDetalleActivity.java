@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ import java.util.List;
 public class MascotaDetalleActivity extends AppCompatActivity {
 
     TextView txt_descripcion, txt_clase_mascota,txt_persona_reporta,txt_estado_alerta;
+    LinearLayout container;
     private int idAlert = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +44,7 @@ public class MascotaDetalleActivity extends AppCompatActivity {
         txt_clase_mascota = findViewById(R.id.txt_clase_mascota);
         txt_persona_reporta = findViewById(R.id.txt_persona_reporta);
         txt_estado_alerta = findViewById(R.id.txt_estado_alerta);
-
-
+        container = findViewById(R.id.containerAlertDetail);
 
 
         Intent intent = getIntent();
@@ -72,6 +74,7 @@ public class MascotaDetalleActivity extends AppCompatActivity {
                         txt_clase_mascota.setText(alerta.getClaseMascota());
                         txt_persona_reporta.setText(alerta.getNombrePersona());
                         txt_estado_alerta.setText(alerta.getEstadoAlerta());
+                        container.setVisibility(View.VISIBLE);
                         progress.dismiss();
 
                     }
