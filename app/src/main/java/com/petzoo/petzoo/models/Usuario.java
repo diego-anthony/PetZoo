@@ -15,6 +15,13 @@ public class Usuario {
     private String CorreoElectronico;
     private String Web = null;
 
+public Usuario(int idUsuario, String username, String password)
+{
+    setIdUsuario(idUsuario);
+    setUsername(username);
+    setPassword(password);
+}
+
 
     // Getter Methods
 
