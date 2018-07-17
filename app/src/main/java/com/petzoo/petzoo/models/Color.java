@@ -1,20 +1,20 @@
 package com.petzoo.petzoo.models;
 
 public class Color {
-    private int IdColor;
+    private String IdColor;
 
 
-    public Color(int idColor)
+    public Color(String idColor)
     {
         setIdColor(idColor);
     }
 
 
-    public int getIdColor() {
+    public String getIdColor() {
         return IdColor;
     }
 
-    public void setIdColor(int idColor) {
+    public void setIdColor(String idColor) {
         IdColor = idColor;
     }
 }
