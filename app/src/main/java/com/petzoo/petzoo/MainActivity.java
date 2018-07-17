@@ -110,6 +110,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
             finish();
         }
+        else if(id == R.id.nav_new_alert_fragment){
+            fragment = new NuevaAlertaFragment();
+        }
         if (fragment != null)
         {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

@@ -5,9 +5,14 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_new_alert_fragment"
+            android:icon="@drawable/ic_add_alert_black_24dp"
+            android:title="Nueva Alerta" />
+        <item
             android:id="@+id/nav_maps_fragment"
             android:icon="@drawable/ic_map_black_24dp"
             android:title="Mapa" />
+
         <item
             android:id="@+id/nav_close_sesion"
             android:icon="@drawable/ic_arrow_back_black_24dp"
