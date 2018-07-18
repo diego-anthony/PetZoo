@@ -5,23 +5,26 @@ public class ClaseMascota {
     private String Descripcion;
 
 
-    // Getter Methods
+    public ClaseMascota(int idClaseMascota, String descripcion)
+    {
+        setIdClaseMascota(idClaseMascota);
+        setDescripcion(descripcion);
+    }
+
 
     public int getIdClaseMascota() {
         return IdClaseMascota;
+    }
+
+    public void setIdClaseMascota(int idClaseMascota) {
+        IdClaseMascota = idClaseMascota;
     }
 
     public String getDescripcion() {
         return Descripcion;
     }
 
-    // Setter Methods
-
-    public void setIdClaseMascota(int IdClaseMascota) {
-        this.IdClaseMascota = IdClaseMascota;
-    }
-
-    public void setDescripcion(String Descripcion) {
-        this.Descripcion = Descripcion;
+    public void setDescripcion(String descripcion) {
+        Descripcion = descripcion;
     }
 }
