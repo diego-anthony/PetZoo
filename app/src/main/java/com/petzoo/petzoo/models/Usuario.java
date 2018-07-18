@@ -22,6 +22,10 @@ public Usuario(int idUsuario, String username, String password)
     setPassword(password);
 }
 
+    public Usuario()
+    {
+    }
+
 
     // Getter Methods
 
