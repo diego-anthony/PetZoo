@@ -11,7 +11,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
+import com.petzoo.petzoo.constants.ApiServiceConstants;
 import com.petzoo.petzoo.constants.UserConstants;
+import com.petzoo.petzoo.helpers.Msg;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 
 public class UserRegisterFragment extends Fragment implements View.OnClickListener  {
@@ -82,6 +97,58 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
     }
 
     private void RegistrarUsuario() {
+        try {
+
+            JSONObject persona = new JSONObject();
+            JSONObject usuario = new JSONObject();
+            JSONArray arrayUsuario = new JSONArray();
+
+            persona.put("Nombre", _txtNombre.getText().toString());
+            persona.put("ApellidoPaterno", _txtApellidoPaterno.getText().toString());
+            persona.put("ApellidoMaterno", _txtApellidoMaterno.getText().toString());
+            persona.put("Celular", _txtCelular.getText().toString());
+            persona.put("Telefono", _txtTelefono.getText().toString());
+            persona.put("CorreoElectronico", _txtCorreo.getText().toString());
+            persona.put("Web", _txtWeb.getText().toString());
+            persona.put("TipoPersona", _codTipoPersona);
+            persona.put("Presentacion", _txtDescripcion.getText().toString());
+            persona.put("IdDistrito", UserConstants.ID_DISTRITO_DEFAULT);
+            persona.put("Direccion", "");
+            persona.put("FechaNacimiento",null);
+
+           // usuario.put("Username",_txtCorreo.getText().toString());
+            //usuario.put("Password",_txtContrasena.getText().toString());
+
+            //arrayUsuario.put(usuario);
+
+           // persona.put("Usuario",arrayUsuario);
+
+            postData(ApiServiceConstants.URL_BASE+"/api/Persona",persona);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void postData(String url,JSONObject data){
+        RequestQueue requstQueue = Volley.newRequestQueue(getContext());
+
+        JsonObjectRequest jsonobj = new JsonObjectRequest(Request.Method.POST, url,data,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Msg.Show(getContext(),"success");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Msg.Show(getContext(),"error "+error.getMessage());
+                    }
+                }
+        );
+        requstQueue.add(jsonobj);
 
     }
 
@@ -122,4 +189,6 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
 
         }
     }
+
+
 }
