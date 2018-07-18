@@ -135,7 +135,7 @@ public class MapsFragment extends Fragment {
         progress.setMessage("Cargando datos...");
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
-        String url = ApiServiceConstants.URL_BASE+"/api/Alerta";
+        String url = ApiServiceConstants.URL_BASE+"/api/get_alerts_in_alert_status";
         JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override

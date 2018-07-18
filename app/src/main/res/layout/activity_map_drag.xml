@@ -18,10 +18,14 @@
         android:id="@+id/btnAddLocationDrag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/accent"
+        android:textColor="@android:color/white"
         android:text="@string/add_location"/>
     <Button
         android:id="@+id/btnAddMyLocation"
         android:layout_width="match_parent"
+        android:background="@color/verde"
+        android:textColor="@android:color/white"
         android:layout_height="wrap_content"
         android:text="@string/add_current_location"/>
 

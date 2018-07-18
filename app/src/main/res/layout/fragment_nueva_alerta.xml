@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".NewAlertFragment"
-    android:background="@color/primary"
     android:padding="20dp">
     <ScrollView
         android:id="@+id/newAlertScrollContainer"
@@ -47,6 +46,8 @@
             <Button
                 android:id="@+id/selectLocation"
                 android:layout_width="match_parent"
+                android:background="@color/accent"
+                android:textColor="@android:color/white"
                 android:layout_height="wrap_content"
                 android:text="Seleccionar ubicación"/>
             <LinearLayout
@@ -88,16 +89,12 @@
                     android:id="@+id/btnRegisterAlert"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:background="@color/verde"
+                    android:textColor="@android:color/white"
                     android:layout_height="wrap_content"
                     android:text="@string/txt_button_register_alert"
                     tools:ignore="ButtonStyle" />
-                <Button
-                    android:layout_weight="1"
-                    android:id="@+id/btnCancelCreateAlert"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/txt_button_cancel"
-                    tools:ignore="ButtonStyle" />
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
