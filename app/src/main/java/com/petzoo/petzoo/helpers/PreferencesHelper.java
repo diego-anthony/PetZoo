@@ -41,5 +41,15 @@ public class PreferencesHelper {
     public String getEmail(){
         return app_prefs.getString(PreferencesFileConstants.USER_EMAIL,"");
     }
+
+    public void putIdPersona(int value){
+        SharedPreferences.Editor editor = app_prefs.edit();
+        editor.putInt(PreferencesFileConstants.PERSONA_ID,value);
+        editor.commit();
+    }
+
+    public int getIdPersona(){
+        return app_prefs.getInt(PreferencesFileConstants.PERSONA_ID,0);
+    }
 }
 

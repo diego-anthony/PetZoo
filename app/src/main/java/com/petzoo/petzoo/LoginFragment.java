@@ -1,8 +1,6 @@
 package com.petzoo.petzoo;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -137,6 +135,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                                 }
                                 _prefHelper.putName(usuario.getNombre());
                                 _prefHelper.putEmail(usuario.getCorreoElectronico());
+                                _prefHelper.putIdPersona(usuario.getIdPersona());
                                 IntentMain();
                             }
                             else {

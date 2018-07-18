@@ -25,7 +25,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-public class MascotaDetalleActivity extends AppCompatActivity {
+public class AlertDetailActivity extends AppCompatActivity {
 
     TextView txt_descripcion, txt_clase_mascota,txt_persona_reporta,txt_estado_alerta;
     LinearLayout container;
@@ -33,7 +33,7 @@ public class MascotaDetalleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mascota_detalle);
+        setContentView(R.layout.activity_alert_detail);
         txt_descripcion = findViewById(R.id.txt_descripcion);
         txt_clase_mascota = findViewById(R.id.txt_clase_mascota);
         txt_persona_reporta = findViewById(R.id.txt_persona_reporta);
@@ -73,7 +73,7 @@ public class MascotaDetalleActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MascotaDetalleActivity.this, "No se ha podido completar la petición", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AlertDetailActivity.this, "No se ha podido completar la petición", Toast.LENGTH_SHORT).show();
                 progress.dismiss();
             }
         });

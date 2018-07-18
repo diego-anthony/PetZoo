@@ -20,7 +20,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,12 +39,9 @@ import com.petzoo.petzoo.constants.PermissionConstants;
 import com.petzoo.petzoo.constants.UbicationConstants;
 import com.petzoo.petzoo.helpers.UserHelper;
 import com.petzoo.petzoo.models.Alerta;
-import com.petzoo.petzoo.models.Mascota;
-import com.petzoo.petzoo.models.ResponseManager;
 
 import org.json.JSONArray;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,16 +62,6 @@ public class MapsFragment extends Fragment {
     public MapsFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MapsFragment newInstance(String param1, String param2) {
         MapsFragment fragment = new MapsFragment();
         Bundle args = new Bundle();
@@ -129,7 +115,7 @@ public class MapsFragment extends Fragment {
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Intent intent = new Intent(getContext(), MascotaDetalleActivity.class);
+                Intent intent = new Intent(getContext(), AlertDetailActivity.class);
                 int idAlert = Integer.parseInt(marker.getSnippet().toString());
                 intent.putExtra(ExtrasConstants.MakerToAlertDetailIdAlert, idAlert);
                 startActivity(intent);
@@ -149,7 +135,8 @@ public class MapsFragment extends Fragment {
         progress.setMessage("Cargando datos...");
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
-        JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, ApiServiceConstants.URL_BASE+"/api/Alerta", null,
+        String url = ApiServiceConstants.URL_BASE+"/api/Alerta";
+        JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -163,7 +150,7 @@ public class MapsFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "No se ha podido completar la petición", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "No se ha podido completar la petición: "+error.getMessage(), Toast.LENGTH_SHORT).show();
                 progress.dismiss();
             }
         });
@@ -273,12 +260,6 @@ public class MapsFragment extends Fragment {
         return(PackageManager.PERMISSION_GRANTED==ActivityCompat.checkSelfPermission(getContext(),perm));
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {

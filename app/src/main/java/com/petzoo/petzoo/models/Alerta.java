@@ -1,23 +1,29 @@
 package com.petzoo.petzoo.models;
 
+import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
+
 public class Alerta {
     private int IdAlerta;
     private String Descripcion;
-    private float Latitud;
-    private float Longitud;
+    private double Latitud;
+    private double Longitud;
     private String FechaAlerta;
     private int IdPersona;
     private int IdPersonaRescate;
     private int IdClaseMascota;
     private int IdEstadoAlerta;
-    //ArrayList < Object > Foto = new ArrayList < Object > ();
-    //private String ClaseMascota = null;
-    //private String EstadoAlerta = null;
-    //private String Persona = null;
-    //private String Persona1 = null;
+    private ArrayList<Foto> Foto = new ArrayList<> ();
 
+    public ArrayList<Foto> getFoto() {
+        return Foto;
+    }
 
-    // Getter Methods
+    public void setFoto(ArrayList<Foto> foto) {
+        Foto = foto;
+    }
+// Getter Methods
 
     public int getIdAlerta() {
         return IdAlerta;
@@ -27,11 +33,11 @@ public class Alerta {
         return Descripcion;
     }
 
-    public float getLatitud() {
+    public double getLatitud() {
         return Latitud;
     }
 
-    public float getLongitud() {
+    public double getLongitud() {
         return Longitud;
     }
 
@@ -81,11 +87,11 @@ public class Alerta {
         this.Descripcion = Descripcion;
     }
 
-    public void setLatitud(float Latitud) {
+    public void setLatitud(double Latitud) {
         this.Latitud = Latitud;
     }
 
-    public void setLongitud(float Longitud) {
+    public void setLongitud(double Longitud) {
         this.Longitud = Longitud;
     }
 
