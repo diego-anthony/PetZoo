@@ -17,14 +17,9 @@ public class Mascota {
     private String ClaseMascota = null;
     private String Color = null;
     private String EstadoMascota = null;
-    /*ArrayList < Object > Foto = new ArrayList < Object > ();
-    ArrayList < Object > Publicacion = new ArrayList < Object > ();
-    ArrayList < Object > Transferencia = new ArrayList < Object > ();*/
     private String Persona = null;
     private String Raza = null;
     private String Tamano = null;
-    //ArrayList < Object > Comportamiento = new ArrayList < Object > ();
-
 
     // Getter Methods
 

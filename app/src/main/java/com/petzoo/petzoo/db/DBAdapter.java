@@ -67,6 +67,7 @@ public class DBAdapter {
 
             if (cursor != null && cursor.getCount() > 0){
                 cursor.moveToLast();
+                /*
                 user = new Usuario();
                 user.setIdUsuario(cursor.getInt(0));
                 user.setUsername(cursor.getString(1));
@@ -77,6 +78,7 @@ public class DBAdapter {
                 user.setCelular(cursor.getString(6));
                 user.setCorreoElectronico(cursor.getString(7));
                 user.setNombre(cursor.getString(8));
+                */
                 cursor.close();
             }
             return user;

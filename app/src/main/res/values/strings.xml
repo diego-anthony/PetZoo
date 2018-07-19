@@ -24,4 +24,11 @@
     <string name="txt_edit_text_alert_description">Haz una descripción de tu alerta</string>
     <string name="txt_button_register_alert">Registrar alerta</string>
     <string name="txt_button_cancel">Cancelar</string>
+    <string name="title_activity_map_drag">Map</string>
+    <string name="add_location">Agregar ubicación</string>
+    <string name="add_current_location">Agregar mi ubicación actual</string>
+    <string name="alert_detail_animal">Detalle de alerta animal</string>
+    <string name="new_alert_description">Descripción:</string>
+    <string name="textview_new_alert_descripcion">Reporte de perro perdido</string>
+    <string name="mascor_class_new_alert">Clase de mascota:</string>
 </resources>

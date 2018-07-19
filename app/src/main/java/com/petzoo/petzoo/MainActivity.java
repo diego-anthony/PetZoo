@@ -3,9 +3,6 @@ package com.petzoo.petzoo;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,12 +15,9 @@ import android.view.MenuItem;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import com.petzoo.petzoo.db.DBHelper;
 import com.petzoo.petzoo.helpers.PreferencesHelper;
-import com.petzoo.petzoo.models.Usuario;
 
 
 public class MainActivity extends AppCompatActivity
@@ -111,7 +105,7 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
         else if(id == R.id.nav_new_alert_fragment){
-            fragment = new NuevaAlertaFragment();
+            fragment = new NewAlertFragment();
         }
         if (fragment != null)
         {
