@@ -29,14 +29,20 @@
                     android:text="Soy individual"
                     android:background="@color/accent"
                     android:textColor="@android:color/white"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:drawableTop="@drawable/user"
+                    android:paddingTop="4dp"
+                    />
                 <Button
                     android:id="@+id/btnSoyCasaProtectora"
                     android:layout_width="0dp"
                     android:background="@color/smoke"
                     android:layout_weight="1"
                     android:text="Soy casa protectora"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:drawableTop="@drawable/house"
+                    android:paddingTop="4dp"
+                    />
             </LinearLayout>
 
             <TextView
@@ -287,11 +293,31 @@
                     android:hint="Repertir contraseña"
                     />
             </LinearLayout>
-            <Button
-                android:id="@+id/btnRegistrarUsuario"
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Registrar"/>
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="8dp"
+                android:layout_height="wrap_content">
+                <Button
+                    android:padding="4dp"
+                    android:id="@+id/btnCancelar"
+                    android:layout_width="0dp"
+                    android:background="@android:color/white"
+                    android:layout_weight="1"
+                    android:text="Cancelar"
+                    android:layout_height="match_parent" />
+                <Button
+                    android:padding="4dp"
+                    android:id="@+id/btnRegistrarUsuario"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="Registrar"
+                    android:background="@color/smoke"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
 
         </LinearLayout>
 

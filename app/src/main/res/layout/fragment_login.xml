@@ -12,22 +12,36 @@
         android:orientation="vertical"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:layout_marginTop="40dp"
+        android:background="@drawable/back"
         >
 
-        <TextView
+        <LinearLayout
+            android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="PetZoo"
-            android:textAlignment="center"
-            android:textSize="24dp"
-            android:textStyle="italic"
-            />
+            android:orientation="horizontal"
+            android:gravity="center">
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="P e t z o o "
+                android:textAlignment="center"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/logo"
+                />
+        </LinearLayout>
+
         <EditText
             android:id="@+id/txtUsername_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Usuario"
+            android:hint="Email"
             android:layout_marginVertical="4dp"
             />
 
@@ -52,13 +66,39 @@
             android:id="@+id/btnLogin_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:textColor="@android:color/white"
             android:text="Login"/>
 
-        <Button
-            android:id="@+id/btnRegister_login"
+
+
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Register"/>
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="8dp"
+
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@android:color/holo_blue_light"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="¿No tienes cuenta?"/>
+            <Button
+                android:padding="4dp"
+                android:id="@+id/btnRegister_login"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="¡Registrate!"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:background="@color/transparent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
     </LinearLayout>
 

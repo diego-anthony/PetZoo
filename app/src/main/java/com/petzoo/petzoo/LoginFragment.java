@@ -1,9 +1,11 @@
 package com.petzoo.petzoo;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.petzoo.petzoo.constants.ApiServiceConstants;
+import com.petzoo.petzoo.constants.UserConstants;
 import com.petzoo.petzoo.helpers.Msg;
 import com.petzoo.petzoo.helpers.PreferencesHelper;
 import com.petzoo.petzoo.models.Usuario;
@@ -41,17 +44,23 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        _prefHelper = new PreferencesHelper(getContext());
+        if(getActivity()!=null)
+        {
+            getActivity().setTitle("Login - Petzoo");
 
-        _txtPassword = view.findViewById(R.id.txtPassword_login);
-        _txtUsername = view.findViewById(R.id.txtUsername_login);
-        _chkRemenberMe = view.findViewById(R.id.chkRemenberMe_login);
-        _btnRegister = view.findViewById(R.id.btnRegister_login);
-        _btnLogin = view.findViewById(R.id.btnLogin_login);
+            _prefHelper = new PreferencesHelper(getContext());
 
-        _btnRegister.setOnClickListener(this);
-        _btnLogin.setOnClickListener(this);
+            _txtPassword = view.findViewById(R.id.txtPassword_login);
+            _txtUsername = view.findViewById(R.id.txtUsername_login);
+            _chkRemenberMe = view.findViewById(R.id.chkRemenberMe_login);
+            _btnRegister = view.findViewById(R.id.btnRegister_login);
+            _btnLogin = view.findViewById(R.id.btnLogin_login);
 
+            _btnRegister.setOnClickListener(this);
+            _btnLogin.setOnClickListener(this);
+
+            getBundle(this.getArguments());
+        }
         return view;
     }
 
@@ -63,7 +72,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 AttachFragment(new UserRegisterFragment());
                 break;
             case R.id.btnLogin_login:
-                ValidUser();
+                LoginUser();
                 break;
         }
     }
@@ -71,6 +80,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     void IntentMain() {
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
+    }
+
+
+    void getBundle(Bundle data)
+    {
+        if(data!=null)
+        {
+            _txtUsername.setText(data.getString(UserConstants.KEY_CORREO,""));
+            _chkRemenberMe.setChecked(true);
+            _txtPassword.requestFocus();
+        }
     }
 
 
@@ -90,23 +110,24 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    void ValidUser()
+    Usuario getUsuarioLogin()
+    {
+        return new Usuario(
+                0,
+                _txtUsername.getText().toString().trim(),
+                _txtPassword.getText().toString()
+        );
+    }
+
+    void LoginUser()
     {
         ClearErrors();
 
         boolean isValid = true;
 
-        Usuario user = new Usuario(
-                0,
-                _txtUsername.getText().toString().trim(),
-                _txtPassword.getText().toString()
-        );
 
-        if (user.getUsername().equals("")) {
-            isValid = false;
-            _txtUsername.setError("El usuario es requerido");
-            _txtUsername.requestFocus();
-        }
+
+        Usuario user = getUsuarioLogin();
 
         if (user.getPassword().equals("")) {
             isValid = false;
@@ -115,45 +136,66 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
         }
 
-        if(isValid )
-        {
-            RequestQueue queue = Volley.newRequestQueue(getContext());
-            String url = ApiServiceConstants.URL_BASE+"/api/validate?username="+user.getUsername()+"&password="+user.getPassword();
-            JsonRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.GET, url,null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-
-                            Gson gson = new Gson();
-                            Usuario usuario = gson.fromJson(response.toString(),Usuario.class);
-                            //showProgress(false);
-                            if(usuario!=null && usuario.getIdUsuario() > 0)
-                            {
-                                if(_chkRemenberMe.isChecked())
-                                {
-                                    _prefHelper.putIsLogin(true);
-                                }
-                                _prefHelper.putName(usuario.getNombre());
-                                _prefHelper.putEmail(usuario.getCorreoElectronico());
-                                _prefHelper.putIdPersona(usuario.getIdPersona());
-                                IntentMain();
-                            }
-                            else {
-                                _txtUsername.setError("Usuario o contraseña es incorrecta");
-                                _txtUsername.requestFocus();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                    //showProgress(false);
-                    Msg.Show(getContext(),"No se pudo completar la petición.");
-                    // progress.dismiss();
-                }
-            });
-            queue.add(jsonObjectRequest);
+        if (user.getUsername().equals("")) {
+            isValid = false;
+            _txtUsername.setError("El usuario es requerido");
+            _txtUsername.requestFocus();
         }
+
+
+        try {
+            if(isValid )
+            {
+                RequestQueue queue = Volley.newRequestQueue(getContext());
+
+                final ProgressDialog pd = new ProgressDialog(getContext());
+                pd.setTitle("Login");
+                pd.setMessage("Validando usuario...");
+                pd.setCancelable(false);
+                pd.show();
+
+                String url = ApiServiceConstants.URL_BASE+"/api/validate?username="+user.getUsername()+"&password="+user.getPassword();
+                JsonRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.GET, url,null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                                Gson gson = new Gson();
+                                Usuario usuario = gson.fromJson(response.toString(),Usuario.class);
+                                if(usuario!=null && usuario.getIdUsuario() > 0)
+                                {
+                                    if(_chkRemenberMe.isChecked())
+                                    {
+                                        _prefHelper.putIsLogin(true);
+                                    }
+                                    _prefHelper.putName(usuario.getNombre());
+                                    _prefHelper.putEmail(usuario.getCorreoElectronico());
+                                    _prefHelper.putIdPersona(usuario.getIdPersona());
+                                    IntentMain();
+                                }
+                                else {
+                                    _txtUsername.setError("Usuario o contraseña es incorrecta");
+                                    _txtUsername.requestFocus();
+                                }
+                                pd.dismiss();
+                            }
+
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        Msg.Show(getContext(),"No se pudo completar la petición.");
+                        pd.dismiss();
+                    }
+                });
+                queue.add(jsonObjectRequest);
+            }
+        }
+        catch (Exception e)
+        {
+            Log.e("Error",e.getMessage());
+        }
+
     }
 
 

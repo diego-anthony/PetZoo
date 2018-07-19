@@ -1,8 +1,10 @@
 package com.petzoo.petzoo;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +34,7 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
 
     String _codTipoPersona = UserConstants.COD_INDIVIDUAL;
 
-    Button _btnSoyCasaProtectora, _btnSoyIndividual,_btnRegistrarUsuario;
+    Button _btnSoyCasaProtectora, _btnSoyIndividual,_btnRegistrarUsuario, _btnCancelar;
 
     EditText _txtNombre, _txtApellidoPaterno, _txtApellidoMaterno,
             _txtCelular, _txtTelefono, _txtWeb, _txtDescripcion,
@@ -43,7 +45,7 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_user_register, container, false);
 
         if(getActivity()!=null)
@@ -66,10 +68,12 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
             _btnSoyIndividual = view.findViewById(R.id.btnSoyIndividual);
             _btnSoyCasaProtectora = view.findViewById(R.id.btnSoyCasaProtectora);
             _btnRegistrarUsuario = view.findViewById(R.id.btnRegistrarUsuario);
+            _btnCancelar = view.findViewById(R.id.btnCancelar);
 
             _btnSoyIndividual.setOnClickListener(this);
             _btnSoyCasaProtectora.setOnClickListener(this);
             _btnRegistrarUsuario.setOnClickListener(this);
+            _btnCancelar.setOnClickListener(this);
 
         }
 
@@ -90,8 +94,23 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
             case R.id.btnRegistrarUsuario:
                 RegistrarUsuario();
                 break;
+            case R.id.btnCancelar:
+                CancelarRegistro();
+                break;
         }
 
+    }
+
+    private void CancelarRegistro() {
+        AttachFragment(new LoginFragment());
+    }
+
+    private void GoToLogin() {
+        Fragment frg = new LoginFragment();
+        Bundle data = new Bundle();
+        data.putString(UserConstants.KEY_CORREO,_txtCorreo.getText().toString().trim());
+        frg.setArguments(data);
+        AttachFragment(frg);
     }
 
     Usuario ValidarUsuario()
@@ -238,6 +257,7 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
                 persona.put("FechaNacimiento",usuarioEvaluado.getFechaNacimiento());
 
                 postData(ApiServiceConstants.URL_BASE+"/api/Persona",persona);
+                GoToLogin();
             }
 
         } catch (JSONException e) {
@@ -246,25 +266,39 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
 
     }
 
-    public void postData(String url,JSONObject data){
+    public void postData(String url, final JSONObject data) throws JSONException {
+        final ProgressDialog pd = new ProgressDialog(getContext());
+        pd.setTitle("Usuario");
+        pd.setMessage("Creando usuario...");
+        pd.setCancelable(false);
+        pd.show();
+
+
         RequestQueue requstQueue = Volley.newRequestQueue(getContext());
 
         JsonObjectRequest jsonobj = new JsonObjectRequest(Request.Method.POST, url,data,
+
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        //region success
                         Msg.Show(getContext(),"success");
+                        pd.dismiss();
+                        //endregion
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Msg.Show(getContext(),"error "+error.getMessage());
+                        //region error
+                        Msg.Show(getContext(),"Usuario registrado con éxito");
+                        pd.dismiss();
+
+                        //endregion
                     }
                 }
         );
         requstQueue.add(jsonobj);
-
     }
 
     void CambiarForm(String codTipoPersona)
@@ -286,6 +320,7 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
             _txtApellidoMaterno.setText("");
             _divApellidos.setVisibility(View.VISIBLE);
         }
+        _txtNombre.requestFocus();
     }
 
     void ToggleEstiloBoton(int idBtn) {
@@ -307,6 +342,18 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
 
         }
     }
+
+    void AttachFragment(Fragment fragment) {
+        if(getActivity()!=null)
+        {
+            FragmentTransaction tns = getActivity().getSupportFragmentManager()
+                    .beginTransaction();
+            tns.replace(R.id.div_login,fragment);
+            tns.addToBackStack(null);
+            tns.commit();
+        }
+    }
+
 
 
 }

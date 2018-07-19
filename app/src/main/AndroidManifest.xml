@@ -38,7 +38,7 @@
         <activity android:name=".AlertDetailActivity" />
         <activity
             android:name=".LoginActivity"
-            android:label="Login">
+            android:label="Petzoo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

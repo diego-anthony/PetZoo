@@ -6,4 +6,5 @@
     <color name="icons">#FFFFFF</color>
     <color name="verde">#326765</color>
     <color name="smoke">#dfdede</color>
+    <color name="transparent">#00ffffff</color>
 </resources>
