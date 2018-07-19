@@ -4,16 +4,21 @@ public class Usuario {
     private int IdUsuario;
     private String Username;
     private String Password;
-    private int IdPersona;
+    private Boolean Estado;
+
     private String Nombre;
     private String ApellidoPaterno;
     private String ApellidoMaterno;
     private String Celular;
+    private String TipoPersona;
     private String Telefono = null;
     private String Direccion = null;
     private String FechaNacimiento = null;
     private String CorreoElectronico;
+    private String Presentacion;
     private String Web = null;
+    private int IdPersona;
+    private int IdDistrito;
 
 public Usuario(int idUsuario, String username, String password)
 {
@@ -21,6 +26,29 @@ public Usuario(int idUsuario, String username, String password)
     setUsername(username);
     setPassword(password);
 }
+
+    public Usuario(int idUsuario, String username, String password,
+                   String nombre, String apellidoPaterno,String apellidoMaterno,
+                   String celular,String telefono,String direccion,String fechaNacimiento,
+                   String correoElectronico, String web, String presentacion,
+                   String tipoPersona, int idDistrito)
+    {
+        setIdUsuario(idUsuario);
+        setUsername(username);
+        setPassword(password);
+        setNombre(nombre);
+        setApellidoPaterno(apellidoPaterno);
+        setApellidoMaterno(apellidoMaterno);
+        setCelular(celular);
+        setTelefono(telefono);
+        setDireccion(direccion);
+        setFechaNacimiento(fechaNacimiento);
+        setCorreoElectronico(correoElectronico);
+        setWeb(web);
+        setPresentacion(presentacion);
+        setTipoPersona(tipoPersona);
+        setIdDistrito(idDistrito);
+    }
 
     public Usuario()
     {
@@ -81,6 +109,19 @@ public Usuario(int idUsuario, String username, String password)
         return Web;
     }
 
+    public String getPresentacion() {
+        return Presentacion;
+    }
+    public String getTipoPersona() {
+        return TipoPersona;
+    }
+    public Boolean getEstado() {
+        return Estado;
+    }
+    public int getIdDistrito() {
+        return IdDistrito;
+    }
+
     // Setter Methods
 
     public void setIdUsuario(int IdUsuario) {
@@ -134,4 +175,21 @@ public Usuario(int idUsuario, String username, String password)
     public void setWeb(String Web) {
         this.Web = Web;
     }
+
+    public void setPresentacion(String Presentacion) {
+        this.Presentacion = Presentacion;
+    }
+
+    public void setTipoPersona(String TipoPersona) {
+        this.TipoPersona = TipoPersona;
+    }
+
+    public void setEstado(Boolean Estado) {
+        this.Estado = Estado;
+    }
+
+    public void setIdDistrito(int IdDistrito) {
+        this.IdDistrito = IdDistrito;
+    }
+
 }

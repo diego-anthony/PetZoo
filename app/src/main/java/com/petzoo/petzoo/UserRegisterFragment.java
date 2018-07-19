@@ -17,17 +17,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonObject;
 import com.petzoo.petzoo.constants.ApiServiceConstants;
 import com.petzoo.petzoo.constants.UserConstants;
 import com.petzoo.petzoo.helpers.Msg;
+import com.petzoo.petzoo.helpers.Validator;
+import com.petzoo.petzoo.models.Usuario;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-
 
 public class UserRegisterFragment extends Fragment implements View.OnClickListener  {
 
@@ -96,34 +94,151 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
 
     }
 
+    Usuario ValidarUsuario()
+    {
+        LimpiarError();
+
+        Boolean esValido = true;
+        Usuario usuario = getUsuario();
+        EditText txt = null;
+
+        if(usuario.getPassword().equals(""))
+        {
+            esValido = false;
+            _txtContrasena.setError("La contraseña es requerida");
+            txt = _txtContrasena;
+        }
+        else if(!usuario.getPassword().equals(_txtRepetirContrasena.getText().toString()))
+        {
+            esValido = false;
+            _txtRepetirContrasena.setError("Las contraseñas no coinciden");
+            txt = _txtRepetirContrasena;
+        }
+
+        if(usuario.getCorreoElectronico().equals(""))
+        {
+            esValido = false;
+            _txtCorreo.setError("El nombre es requerido");
+            txt = _txtCorreo;
+        }
+        else if(!Validator.isValidEmail(usuario.getCorreoElectronico()))
+        {
+            esValido = false;
+            _txtCorreo.setError("El correo no es válido");
+            txt = _txtCorreo;
+        }
+
+        if(!usuario.getWeb().equals("") && !Validator.isValidURL(usuario.getWeb()))
+        {
+            esValido = false;
+            _txtWeb.setError("La web no es válida");
+            txt = _txtWeb;
+        }
+
+        if(usuario.getCelular().equals(""))
+        {
+            esValido = false;
+            _txtCelular.setError("El número de celular es requerido");
+            txt = _txtCelular;
+        }
+
+        if(usuario.getNombre().equals(""))
+        {
+            esValido = false;
+            _txtNombre.setError("El nombre es requerido");
+            txt = _txtNombre;
+        }
+
+        if(!esValido)
+        {
+            usuario = null;
+            txt.requestFocus();
+        }
+
+        return usuario;
+    }
+
+    void LimpiarError()
+    {
+        _txtNombre.setError(null);
+        _txtCorreo.setError(null);
+        _txtContrasena.setError(null);
+        _txtWeb.setError(null);
+        _txtCelular.setError(null);
+    }
+
+
+    void LimpiarTxts()
+    {
+        _txtNombre.setText("");
+        _txtApellidoPaterno.setText("");
+        _txtApellidoMaterno.setText("");
+        _txtCelular.setText("");
+        _txtTelefono.setText("");
+        _txtWeb.setText("");
+        _txtDescripcion.setText("");
+        _txtCorreo.setText("");
+        _txtContrasena.setText("");
+        _txtRepetirContrasena.setText("");
+    }
+    Usuario getUsuario()
+    {
+        Usuario usuario = new Usuario();
+
+        usuario.setUsername(_txtCorreo.getText().toString().trim());
+        usuario.setPassword(_txtContrasena.getText().toString());
+        usuario.setEstado(true);
+
+        usuario.setNombre(_txtNombre.getText().toString().trim());
+        usuario.setApellidoPaterno(_txtApellidoPaterno.getText().toString().trim());
+        usuario.setApellidoMaterno(_txtApellidoMaterno.getText().toString().trim());
+        usuario.setCelular(_txtCelular.getText().toString().trim());
+        usuario.setTelefono( _txtTelefono.getText().toString().trim());
+        usuario.setDireccion("");
+        usuario.setFechaNacimiento(null);
+        usuario.setCorreoElectronico(_txtCorreo.getText().toString().trim());
+        usuario.setWeb(_txtWeb.getText().toString().trim());
+        usuario.setPresentacion(_txtDescripcion.getText().toString().trim());
+        usuario.setTipoPersona(_codTipoPersona);
+        usuario.setIdDistrito(UserConstants.ID_DISTRITO_DEFAULT);
+        usuario.setDireccion("");
+        usuario.setFechaNacimiento(null);
+        return usuario;
+    }
+
     private void RegistrarUsuario() {
         try {
 
-            JSONObject persona = new JSONObject();
-            JSONObject usuario = new JSONObject();
-            JSONArray arrayUsuario = new JSONArray();
+            Usuario usuarioEvaluado = ValidarUsuario();
 
-            persona.put("Nombre", _txtNombre.getText().toString());
-            persona.put("ApellidoPaterno", _txtApellidoPaterno.getText().toString());
-            persona.put("ApellidoMaterno", _txtApellidoMaterno.getText().toString());
-            persona.put("Celular", _txtCelular.getText().toString());
-            persona.put("Telefono", _txtTelefono.getText().toString());
-            persona.put("CorreoElectronico", _txtCorreo.getText().toString());
-            persona.put("Web", _txtWeb.getText().toString());
-            persona.put("TipoPersona", _codTipoPersona);
-            persona.put("Presentacion", _txtDescripcion.getText().toString());
-            persona.put("IdDistrito", UserConstants.ID_DISTRITO_DEFAULT);
-            persona.put("Direccion", "");
-            persona.put("FechaNacimiento",null);
+            if(usuarioEvaluado!=null)
+            {
+                JSONObject persona = new JSONObject();
+                JSONObject usuario = new JSONObject();
+                JSONArray arrayUsuario = new JSONArray();
 
-           // usuario.put("Username",_txtCorreo.getText().toString());
-            //usuario.put("Password",_txtContrasena.getText().toString());
+                usuario.put("Username",usuarioEvaluado.getCorreoElectronico());
+                usuario.put("Password",usuarioEvaluado.getPassword());
+                usuario.put("Activo",usuarioEvaluado.getEstado());
 
-            //arrayUsuario.put(usuario);
+                arrayUsuario.put(usuario);
 
-           // persona.put("Usuario",arrayUsuario);
+                persona.put("Usuario",arrayUsuario);
+                persona.put("Nombre", usuarioEvaluado.getNombre());
+                persona.put("ApellidoPaterno",usuarioEvaluado.getApellidoPaterno());
+                persona.put("ApellidoMaterno", usuarioEvaluado.getApellidoMaterno());
+                persona.put("Celular", usuarioEvaluado.getCelular());
+                persona.put("Telefono",usuarioEvaluado.getTelefono());
+                persona.put("CorreoElectronico", usuarioEvaluado.getCorreoElectronico());
+                persona.put("Web", usuarioEvaluado.getWeb());
+                persona.put("TipoPersona", usuarioEvaluado.getTipoPersona());
+                persona.put("Presentacion", usuarioEvaluado.getPresentacion());
+                persona.put("IdDistrito", usuarioEvaluado.getIdDistrito());
+                persona.put("Direccion", usuarioEvaluado.getDireccion());
+                persona.put("FechaNacimiento",usuarioEvaluado.getFechaNacimiento());
 
-            postData(ApiServiceConstants.URL_BASE+"/api/Persona",persona);
+                postData(ApiServiceConstants.URL_BASE+"/api/Persona",persona);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -154,6 +269,9 @@ public class UserRegisterFragment extends Fragment implements View.OnClickListen
 
     void CambiarForm(String codTipoPersona)
     {
+        LimpiarError();
+        LimpiarTxts();
+
         _codTipoPersona = codTipoPersona;
 
         if(_codTipoPersona == UserConstants.COD_CASA_PROTECTORA)
